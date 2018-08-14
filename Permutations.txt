@@ -1,0 +1,49 @@
+using System.Linq;
+public class Solution {
+    public IList<IList<int>> Permute(int[] nums) {
+        
+        if (nums == null || nums.Length == 0) { return null; }
+        Dictionary<int, int> countMap = new Dictionary<int, int>();
+        for (int i= 0; i < nums.Length; i++)
+        {
+            if (countMap.ContainsKey(nums[i]))
+            {
+                countMap[nums[i]]++;
+            }
+            else
+            {
+                countMap.Add(nums[i], 1);
+            }
+        }
+        
+        int[] counts = countMap.Values.ToArray();
+        int[] uniqueNums = countMap.Keys.ToArray();
+        var permutations = new List<IList<int>>();
+        int[] results = new int[nums.Length];
+        PermuteUtils(uniqueNums, counts, results, permutations, 0, nums);
+        return permutations;
+    }
+    
+    private void PermuteUtils(int[] uniqueNums, int[] counts, int[] result, List<IList<int>> permutations, int level, int[] originalNums)
+    {
+        if (level == originalNums.Length) 
+        {
+            permutations.Add(result.ToList());
+            return;
+        }
+        
+        for (int i = 0; i < counts.Length; i++)
+        {
+            if (counts[i] == 0)
+            {
+                continue;
+            }
+            
+            result[level] = uniqueNums[i];
+            counts[i]--;
+            PermuteUtils(uniqueNums, counts, result, permutations, level + 1, originalNums);
+            counts[i]++;
+        }
+    }
+    
+}
